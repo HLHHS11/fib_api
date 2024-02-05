@@ -1,4 +1,32 @@
 # fib-api
+## API仕様
+- メソッド: HTTP GET
+- エンドポイントURL: https://7yk9brpw4b.execute-api.ap-northeast-1.amazonaws.com/Prod/fib
+- リクエストパラメータ: n (フィボナッチ数の順番を指定する1以上の整数)
+- リクエスト例: 
+  ``` sh
+  https://7yk9brpw4b.execute-api.ap-northeast-1.amazonaws.com/Prod/fib?n=99
+  ```
+- レスポンス例:  
+  ``` json
+  {"result":"218922995834555169026"}
+  ```
+## 環境構築
+AWS SAM CLIを使用。ページ下部を参照。    
+
+## テスト・デプロイ
+``` sh
+# build
+sam build
+# deploy
+sam deploy
+# local debug
+sam local start-api
+# run tests
+cd fib-api
+npx jest
+```
+---
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
 
