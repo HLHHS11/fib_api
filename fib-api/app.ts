@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { fibonacci } from './src/fibonacci';
 
 /**
  *
@@ -11,11 +12,39 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
  */
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    const nQueryParam = event.queryStringParameters?.n;
+    if (typeof nQueryParam === 'undefined') {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: 'Query parameter "n" is required.',
+            }),
+        };
+    }
+    if (nQueryParam === '') {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: 'Query parameter "n" must not be empty.',
+            }),
+        };
+    }
+    const n = Number(nQueryParam);
+    if (n < 1 || !Number.isInteger(n)) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                message: 'Query parameter "n" must be a positive integer.',
+            }),
+        };
+    }
+
     try {
+        const result = fibonacci(n);
         return {
             statusCode: 200,
             body: JSON.stringify({
-                message: 'hello world',
+                result: result.toString(), // bigintを文字列に変換
             }),
         };
     } catch (err) {
@@ -23,7 +52,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: 'some error happened',
+                message: 'An error occurred during the calculation.',
             }),
         };
     }
